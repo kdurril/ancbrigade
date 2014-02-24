@@ -8,6 +8,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 
+from django.contrib import messages
+
 from ancbrigadesite.models import Document
 from ancbrigadesite.views import anc_data
 
@@ -102,6 +104,8 @@ def upload_document(request):
 			else:
 				raise
 			newdoc.save()
+			messages.success(request, 'Document {doc_id} created.'.format(doc_id=newdoc.id))
+			
 
 			# Redirect to the document list after POST
 			return HttpResponseRedirect(reverse('ancbrigadesite.backend_views.edit_document', args=[newdoc.id]))
@@ -131,6 +135,7 @@ def edit_document(request, doc_id):
 		
 	# Make sure the document is ready for annotation.
 	doc.populate_annotation_document()
+	messages.success(request, 'Document {doc_id} updated.'.format(doc_id=doc_id))
 
 	return render_to_response(
 		'ancbrigadesite/edit_document.html',
