@@ -42,7 +42,7 @@
 							{% if doc %}
 								<a href="{{doc.get_absolute_url}}">{{docname}}</a>
 							{% else %}
-								No {{docname}} (<a href="/upload-document">Upload</a>)
+								No {{docname}} (<a href="{{anc}}/upload-document">Upload</a>)
 							{% endif %}
 						{% endfor %}
 					</p>
@@ -94,7 +94,7 @@
                                         {% endfor %}
                                 </ul>
                                 {% endif %}
-                                <p>Have more documents? <a href="/upload-document">Upload them!</a></p>
+                                <p>Have more documents? <a href="{{anc}/upload-document">Upload them!</a></p>
                                 
 			</div><!-- /column -->
 
