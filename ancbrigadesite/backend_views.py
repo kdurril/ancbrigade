@@ -23,6 +23,7 @@ def is_valid_anc(value):
 	if value[0] not in anc_data or value[1] not in anc_data[value[0]]['ancs']:
 		raise ValidationError("%s is not an ANC." % value)
 
+	
 class UploadDocumentForm(forms.Form):
 	anc = forms.CharField(
 		label="ANC",
@@ -130,12 +131,12 @@ def edit_document(request, doc_id):
 		if form.is_valid():
 			# Save and redirect back to page.
 			doc.save()
+	        messages.success(request, 'Document {doc_id} updated.'.format(doc_id=doc_id))
 	else:
 		form = EditDocumentForm(instance=doc)
 		
 	# Make sure the document is ready for annotation.
 	doc.populate_annotation_document()
-	messages.success(request, 'Document {doc_id} updated.'.format(doc_id=doc_id))
 
 	return render_to_response(
 		'ancbrigadesite/edit_document.html',
