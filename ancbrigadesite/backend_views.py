@@ -67,10 +67,12 @@ class UploadDocumentForm(forms.Form):
 		if "docfile" not in self.cleaned_data:
 			raise forms.ValidationError("Select a file.")
 
-def upload_document(request):
+def upload_document(request, anc="9X"):
 	# Handle file upload
 	if request.method == 'POST':
+		
 		form = UploadDocumentForm(request.POST, request.FILES)
+	
 		if form.is_valid() \
 			and not (form.cleaned_data["upload_type"] == "file" and "docfile" not in request.FILES) \
 			and not (form.cleaned_data["upload_type"] == "paste" and not form.cleaned_data["content"]) \
@@ -105,6 +107,8 @@ def upload_document(request):
 			else:
 				raise
 			newdoc.save()
+			# recent ANC documents
+		    #documents = Document.objects.filter(anc=anc).order_by('-created')[0:10]
 			messages.success(request, 'Document {doc_id} created.'.format(doc_id=newdoc.id))
 			
 
@@ -112,6 +116,7 @@ def upload_document(request):
 			return HttpResponseRedirect(reverse('ancbrigadesite.backend_views.edit_document', args=[newdoc.id]))
 	else:
 		form = UploadDocumentForm() # A empty, unbound form
+		form.fields['anc'].initial = anc
 
 	return render_to_response(
 		'ancbrigadesite/upload_document.html',
