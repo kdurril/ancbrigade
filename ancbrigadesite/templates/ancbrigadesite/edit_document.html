@@ -120,7 +120,7 @@ jQuery(function ($) {
   <div class="row">
 	<div class="span3">
 		{% if messages %}
-            <p class="messages" style="margin-top: 1em">{% for message in messages %}{{ message }}{% endfor %}</p>
+            <p class="text-success" style="margin-top: 1em">{% for message in messages %}{{ message }}{% endfor %}</p>
         {% endif %}
 		{% include "form.html" with form=form title="Metadata" form_display_layout="vertical" submit_button_text="Update" %}
 		<hr/>
