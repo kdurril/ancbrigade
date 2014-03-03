@@ -120,13 +120,8 @@ jQuery(function ($) {
   <div class="row">
 	<div class="span3">
 		{% if messages %}
-                    <ul class="messages">
-                    {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                    {% endfor %}
-                    </ul>
+            <p class="messages" style="margin-top: 1em">{% for message in messages %}{{ message }}{% endfor %}</p>
         {% endif %}
-		{% if request.method == "POST" %}<p class="text-success" style="margin-top: 1em">Document information has been updated.</p>{% endif %}
 		{% include "form.html" with form=form title="Metadata" form_display_layout="vertical" submit_button_text="Update" %}
 		<hr/>
 		<div><a href="{{document.get_absolute_url}}">View document on site &gt;</a></div>
