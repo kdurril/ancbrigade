@@ -81,6 +81,18 @@ def upload_document(request, anc="9X"):
 			newdoc.anc = form.cleaned_data['anc']
 			if form.cleaned_data["upload_type"] == "file":
 				newdoc.set_document_content(request.FILES['docfile'])
+				ck_doc_size = Document.objects.filter(document_content_size=newdoc.document_content_size)
+				if len(ck_doc_size) >= 2:
+					form = UploadDocumentForm() # A empty, unbound form
+					form.fields['anc'].initial = anc
+					messages.success(request, 'Document is probably a duplicate. Please check {0} to review past documents.'\
+						.format('''<a href="'''+anc+'''">DocReview</a>'''))
+
+					return render_to_response(
+					'ancbrigadesite/upload_document.html',
+					{ 'form': form },
+					context_instance=RequestContext(request))
+
 			elif form.cleaned_data["upload_type"] == "paste":
 				newdoc.set_document_content(form.cleaned_data["content"])
 			elif form.cleaned_data["upload_type"] == "url":
@@ -107,11 +119,18 @@ def upload_document(request, anc="9X"):
 			else:
 				raise
 			newdoc.save()
-			# recent ANC documents
-		    #documents = Document.objects.filter(anc=anc).order_by('-created')[0:10]
-			messages.success(request, 'Document {doc_id} created.'.format(doc_id=newdoc.id))
-			
+			ck_doc_anc = Document.objects.filter(anc=newdoc.anc)
+			ck_doc_size = Document.objects.filter(document_content_size=newdoc.document_content_size) 
+			ck_doc_type = Document.objects.filter(document_content_type=newdoc.document_content_type)
+			ck_anc_size = ck_doc_anc.filter(document_content_size=newdoc.document_content_size)
+			# query based on doc features: ANC, size, type, meeting_date but allow draft and final
+		    #documents = Document.objects.filter(anc=newdoc.anc)
 
+			#documents = Document.objects.filter(document_content_type=newdoc.document_content_type)
+			#Chain this
+			#doc_filter = Document.objects.filter(anc=newdoc.anc, document_content_size=newdoc.document_content_size, document_content_type=newdoc.document_content_type)
+			# if something is returned in the set, suggest that the result and the target are the same
+			messages.success(request, 'Document {doc_id}, {size}, {type} created.'.format(doc_id=newdoc.id, size=str(len(ck_anc_size)), type=newdoc.document_content_type))
 			# Redirect to the document list after POST
 			return HttpResponseRedirect(reverse('ancbrigadesite.backend_views.edit_document', args=[newdoc.id]))
 	else:

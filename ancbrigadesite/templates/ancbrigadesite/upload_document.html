@@ -7,8 +7,11 @@
 {% endblock %}
 
 {% block masthead %}Upload a Document{% endblock %}
-
+        
 {% block body %}
+         {% if messages %}
+            <p class="text-success" style="margin-top: 1em">{% for message in messages %}{{ message }}{% endfor %}</p>
+        {% endif %}
 		{% include "form.html" with form=form title="Upload Document" form_display_layout="horizontal" %}
 
 		{% if url_error %}<p class="text-error">{{url_error}}</p>{% endif %}
